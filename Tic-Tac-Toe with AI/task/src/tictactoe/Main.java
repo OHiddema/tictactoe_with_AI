@@ -32,6 +32,7 @@ public class Main {
         if (diagonal1.equals("XXX") || diagonal2.equals("XXX")) return State.X_WIN;
         if (diagonal1.equals("OOO") || diagonal2.equals("OOO")) return State.O_WIN;
 
+        // check for empty cells
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] == ' ') {
@@ -151,10 +152,6 @@ public class Main {
         }
     }
 
-    public static void makeHardMove() {
-        makeAITurn();
-    }
-
     public static boolean isNotTwoInARow(char doubleChar, char fillChar) {
         int emptyRow = -1;
         int emptyCol = -1;
@@ -261,8 +258,8 @@ public class Main {
 
 //    Mike
 
-    public static void makeAITurn() {
-        char aiStatus = (moves % 2 == 0) ? 'X' : 'O'; //Get the symbol the AI is playing. (1=x, 2=o)
+    public static void makeHardMove() {
+        char aiStatus = (moves % 2 == 0) ? 'X' : 'O'; //Get the symbol the AI is playing.
         double bestScore = Double.NEGATIVE_INFINITY;
         GridPos bestMove = new GridPos();
         for (int x = 0; x < 3; x++) {
@@ -270,9 +267,9 @@ public class Main {
                 // Is the spot available?
                 if (board[x][y] == ' ') {
                     board[x][y] = aiStatus; //Mark this position
-                    double score = minimax(false); //Check the score we end up after marking y and x as our move.
-                    board[x][y] = ' '; //Unmarked move.
-                    if (score > bestScore) { //If this move had a better score then our previous best score then:
+                    double score = minimax(false); //Check the score we end up after marking (x,y) as our move.
+                    board[x][y] = ' '; //Remove mark
+                    if (score > bestScore) { //If this move had a better score than our previous best score then:
                         bestScore = score; //Mark our current score as our best score.
                         bestMove = new GridPos(x, y); //Save the mark as our best move.
                     }
@@ -280,7 +277,6 @@ public class Main {
             }
         }
         board[bestMove.row][bestMove.col] = aiStatus; //Apply our best move.
-//        endTurn();
     }
 
     public static double minimax(boolean isMaximizing) {
